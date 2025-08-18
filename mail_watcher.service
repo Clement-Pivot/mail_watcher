@@ -1,0 +1,14 @@
+[Unit]
+Description=Mail watcher service
+After=network.target
+StartLimitIntervalSec=1
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/root/scripts/mail_watcher/mail_watcher.sh
+
+[Install]
+WantedBy=multi-user.target
