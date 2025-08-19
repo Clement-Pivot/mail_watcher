@@ -9,6 +9,7 @@ Restart=always
 RestartSec=1
 User=root
 ExecStart=/root/scripts/mail_watcher/mail_watcher.sh
+WorkingDirectory=/root/scripts/mail_watcher
 
 [Install]
 WantedBy=multi-user.target
