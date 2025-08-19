@@ -1,9 +1,9 @@
 #!/bin/bash
 
-state="$(docker container ls --format 'table {{.Status}}\t{{.Image}}' | grep transmission | awk '{print $1}')"
+state="$(docker compose ls -a | grep transmission | awk '{print $2}')"
 
-if [[ "$state" != "Up" ]] && [[ ! -f /tmp/transmission_vpn_down ]]; then
-    echo "Transmission Down $(date)"
+if [[ "$state" == "exited(1)" ]] && [[ ! -f /tmp/transmission_vpn_down ]]; then
+    echo "Transmission Down $(date)" >> $1
     touch /tmp/transmission_vpn_down
     printf "%s" "Transmission VPN down, reply vpnbook password with subject [OPENVPN] at <a href='mailto:root@lanrumble.com'>root@lanrumble.com</a>" | mail -a "Content-Type: text/html" -s "[OPENVPN] Down at `date`" clement.pivot@protonmail.com
 fi

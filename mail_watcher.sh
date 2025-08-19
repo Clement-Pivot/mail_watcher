@@ -1,6 +1,7 @@
 #!/bin/bash
 
 logfile="/var/log/mail_watcher"
+docketransmission="/root/docker_openvpn_transmission"
 
 echo "[STARTING] $(date)" >> $logfile
 
@@ -27,10 +28,10 @@ while [ 1 ];do
 		echo "$(date) Ordre : $o" >> $logfile
 		if [[ "${o^^}" == "OPENVPN" ]]; then
 			t=$(echo "$m" | egrep "^[a-zA-Z0-9]{5,15}\+?\-*\+?$" | awk -F+ '{print $1}')
-			echo "vpnbook" > /root/docker_openvpn_transmission/openvpn_creds
-			echo "$t" >> /root/docker_openvpn_transmission/openvpn_creds
+			echo "vpnbook\n$t" > $docker_transmission/openvpn_creds
 			echo "$(date) mise à jour du mot de passe Vpnbook : $t" >> $logfile
 			rm /tmp/transmission_vpn_down
+			docker compose -f $docker_transmission/compose.yml start 
 		elif [[ "${o^^}" == "FAIL2BAN" ]]; then
 			echo "$m" >> /root/mails_fail2ban
 		elif [[ "${o^^}" == "UPGRADE" ]]; then
@@ -46,6 +47,6 @@ while [ 1 ];do
 			echo "$m" >> /root/mails
 		fi
 	fi
-	./check_transmission_status.sh
+	./check_transmission_status.sh "$logfile"
 	sleep 10
 done
